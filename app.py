@@ -349,6 +349,26 @@ ba_publications = load_ba_data()
 ba_weisungen = load_ba_weisungen_data()
 monitor_data = load_monitor_data()
 
+# Единый поток всех собранных публикаций
+all_publications = (
+    monitor_data.get("all_publications", [])
+    + lea_publications
+    + bamf_publications
+    + ba_publications
+    + ba_weisungen
+)
+
+# Реальная статистика по фактически загруженным данным
+monitor_data["all_publications"] = all_publications
+monitor_data["total_publications"] = len(all_publications)
+
+# Если основной монитор не дал готовый список релевантных публикаций,
+# считаем релевантными все записи из подключенных профильных источников
+if not monitor_data.get("results"):
+    monitor_data["results"] = all_publications
+
+monitor_data["relevant_count"] = len(monitor_data["results"])
+
 # ---------- HEADER ----------
 
 left, right = st.columns([5, 1])
@@ -417,13 +437,9 @@ with left:
     st.markdown("##### 🌐 Официальные источники")
 
 source_badges = [
-    (
+       (
         "🌐 Все",
-        len(monitor_data["all_publications"])
-        + len(lea_publications)
-        + len(bamf_publications)
-        + len(ba_publications)
-        + len(ba_weisungen),
+        len(monitor_data["all_publications"]),
         None,
     ),
     (
