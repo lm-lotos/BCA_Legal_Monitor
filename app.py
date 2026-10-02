@@ -558,7 +558,7 @@ with tab_current:
     high_results = [
         item
         for item in monitor_data["results"]
-        if item["relevance_level"] == "HIGH"
+        if item.get("relevance_level", "MEDIUM") == "HIGH"
     ]
 
     if high_results:
