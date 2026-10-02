@@ -277,37 +277,75 @@ DISPLAY_TRANSLATIONS = {
     },
 }
 
-@st.cache_data(ttl=86400, show_spinner=False)
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_monitor_data():
-    return fetch_updates()
+    try:
+        data = fetch_updates()
+        if isinstance(data, dict):
+            return data
+    except Exception:
+        pass
 
-@st.cache_data(ttl=86400, show_spinner=False)
+    return {
+        "results": [],
+        "all_publications": [],
+        "total_publications": 0,
+        "relevant_count": 0,
+    }
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_lea_data():
-    return get_lea_publications()
-lea_publications = load_lea_data()
+    try:
+        data = get_lea_publications()
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
 
-@st.cache_data(ttl=86400, show_spinner=False)
+
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_bamf_data():
-    return fetch_bamf_publications()
+    try:
+        data = fetch_bamf_publications()
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
 
-bamf_publications = load_bamf_data()
-@st.cache_data(ttl=86400, show_spinner=False)
+
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_ba_data():
-    return fetch_ba_publications()
+    try:
+        data = fetch_ba_publications()
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
 
-ba_publications = load_ba_data()
-@st.cache_data(ttl=86400, show_spinner=False)
+
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_ba_weisungen_data():
-    return fetch_ba_weisungen()
+    try:
+        data = fetch_ba_weisungen()
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
+
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def load_legal_comparison(url):
-    return build_legal_comparison(url)
+    try:
+        return build_legal_comparison(url)
+    except Exception:
+        return None
+
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def cached_translate_text(text, language_code, api_key=None):
     return translate_text(text, language_code, api_key=api_key)
 
+
+lea_publications = load_lea_data()
+bamf_publications = load_bamf_data()
+ba_publications = load_ba_data()
 ba_weisungen = load_ba_weisungen_data()
 monitor_data = load_monitor_data()
 
