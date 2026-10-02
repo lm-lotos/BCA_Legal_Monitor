@@ -362,12 +362,14 @@ all_publications = (
 monitor_data["all_publications"] = all_publications
 monitor_data["total_publications"] = len(all_publications)
 
-# Если основной монитор не дал готовый список релевантных публикаций,
-# считаем релевантными все записи из подключенных профильных источников
-if not monitor_data.get("results"):
-    monitor_data["results"] = all_publications
+# Релевантными считаем только публикации, реально прошедшие BCA-фильтр
+monitor_data["results"] = monitor_data.get("results", [])
 
-monitor_data["relevant_count"] = len(monitor_data["results"])
+monitor_data["relevant_count"] = sum(
+    1
+    for item in monitor_data["results"]
+    if item.get("relevance_level") == "HIGH"
+)
 
 # ---------- HEADER ----------
 
@@ -444,7 +446,7 @@ source_badges = [
     ),
     (
         "⚖️ Gesetze",
-        len(monitor_data["all_publications"]),
+        monitor_data.get("total_publications", 0),
         "Gesetze im Internet",
     ),
     (
