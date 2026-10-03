@@ -457,6 +457,9 @@ def calculate_relevance(text):
         "Fiktionsbescheinigung",
         "Duldung",
         "Aufenthaltsgestattung",
+        "Aufenthaltsgesetzes",
+        "Beschäftigung von Fachkräften",
+        "Beschäftigung ausländischer Fachkräfte",
     ]
 
     very_strong_matches = find_matches(text, very_strong_terms)
@@ -769,7 +772,8 @@ def classify_signals(text):
     }
 
 def is_relevant(text):
-    return len(find_keywords(text)) > 0
+    relevance = calculate_relevance(text)
+    return relevance["score"] > 0
 
 
 def get_document_title(url):
@@ -862,7 +866,7 @@ def fetch_updates():
 
         if relevance_level in ("HIGH", "POSSIBLE"):
             final_relevant_count += 1
-            
+
         signals = classify_signals(full_text)
 
         print()  
