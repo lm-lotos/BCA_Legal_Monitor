@@ -860,10 +860,9 @@ def fetch_updates():
             "reasons": relevance["reasons"],
         })
 
-        if relevance_level != "HIGH":
-            continue
-
-        final_relevant_count += 1
+        if relevance_level in ("HIGH", "POSSIBLE"):
+            final_relevant_count += 1
+            
         signals = classify_signals(full_text)
 
         print()  
