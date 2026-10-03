@@ -362,13 +362,13 @@ all_publications = (
 monitor_data["all_publications"] = all_publications
 monitor_data["total_publications"] = len(all_publications)
 
-# Релевантными считаем только публикации, реально прошедшие BCA-фильтр
-monitor_data["results"] = monitor_data.get("results", [])
+# Результаты для светофора: HIGH + POSSIBLE + LOW
+monitor_data["results"] = monitor_data.get("results") or monitor_data.get("all_publications", [])
 
 monitor_data["relevant_count"] = sum(
     1
     for item in monitor_data["results"]
-    if item.get("relevance_level") == "HIGH"
+    if item.get("relevance_level") in ("HIGH", "POSSIBLE")
 )
 
 # ---------- HEADER ----------
